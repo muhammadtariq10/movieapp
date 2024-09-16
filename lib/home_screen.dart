@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:movieapp/app_theme.dart';
-import 'package:movieapp/tabs/Home_Tap.dart';
-import 'package:movieapp/tabs/browes_tap.dart';
-import 'package:movieapp/tabs/search_tap.dart';
-import 'package:movieapp/tabs/watch_list_tap.dart';
+import 'package:movieapp/tabs/browse/browse_tap.dart';
+import 'package:movieapp/tabs/home/home_tap.dart';
+import 'package:movieapp/tabs/search/search_tap.dart';
+import 'package:movieapp/tabs/watchlist/watch_list_tap.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,11 +14,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int currentIndex = 0;
-  List<Widget> taps = const [
-    HomeTap(),
-    SearchTap(),
-    BrowseTab(),
-    WatchListTap(),
+  List<Widget> taps = [
+    const HomeTap(),
+    const SearchTap(),
+      BrowseTab(),
+    const WatchListTap(),
   ];
   @override
   Widget build(BuildContext context) {
