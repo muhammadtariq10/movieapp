@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movieapp/app_theme.dart';
 import 'package:movieapp/home_screen.dart';
 
 void main() {
@@ -15,6 +16,8 @@ class MovieApp extends StatelessWidget {
       routes: {
         HomeScreen.routName: (_) => const HomeScreen(),
       },
+      themeMode: ThemeMode.light,
+      theme: AppTheme.lightetheme,
     );
   }
 }
