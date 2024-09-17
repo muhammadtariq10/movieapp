@@ -18,7 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
     const HomeTap(),
     const SearchTap(),
       BrowseTab(),
-    const WatchListTap(),
+     WatchListTap(),
   ];
   @override
   Widget build(BuildContext context) {
