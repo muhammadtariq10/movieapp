@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class MovieDetails extends StatelessWidget {
+class DetailsOfMovie extends StatelessWidget {
   final String movieName;
 
-  const MovieDetails({super.key, required this.movieName});
+  const DetailsOfMovie({super.key, required this.movieName});
 
   @override
   Widget build(BuildContext context) {
@@ -11,10 +11,7 @@ class MovieDetails extends StatelessWidget {
       appBar: AppBar(
         title: Text(movieName),
         leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Colors.white,
-          ),
+          icon: const Icon(Icons.arrow_back,color: Colors.white,),
           onPressed: () {
             Navigator.of(context).pop();
           },
