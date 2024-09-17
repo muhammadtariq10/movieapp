@@ -7,6 +7,7 @@ class AppTheme {
   static const Color lava = Color(0xFF707070);
   static const Color graySecond = Color(0xFF282A28);
   static const Color black = Color(0xFF000000);
+  static const Color darkGrey = Color(0xFF514F4F);
 
   static ThemeData lightetheme = ThemeData(
     primaryColor: white,
