@@ -29,7 +29,10 @@ class CategoryGridMovieDetails extends StatelessWidget {
                 children: [
                   Text(
                     categories.title,
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge
+                        ?.copyWith(fontSize: 16),
                   ),
                   Text(
                     categories.year,

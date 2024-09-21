@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:movieapp/tabs/browse/movie_model.dart';
 
 import '../../app_theme.dart';
+import '../category/category_model_movie_details.dart';
 
 class MovieItem extends StatelessWidget {
   const MovieItem({super.key, required this.categories});
-  final MovieModel categories;
+
+  final CategoryModelMovieDetails categories;
   @override
   Widget build(BuildContext context) {
     return Padding(
