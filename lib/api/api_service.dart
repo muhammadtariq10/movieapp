@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:movieapp/models/MoviesResponse.dart';
 
+import '../models/TypeOfMoviesResponse.dart';
 import 'api_constants.dart';
 
 class APIService {
@@ -19,6 +20,26 @@ class APIService {
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
       return MoviesResponse.fromJson(json);
+    } else {
+      throw Exception('Failed to load genres');
+    }
+  }
+
+  static Future<TypeOfMoviesResponse> getSourcesOfMovies(int genreId) async {
+    final uri =
+        Uri.https(APIConstants.baseURL, APIConstants.moviesDetailsEndPoint, {
+      'language': 'en',
+      'with_genres': genreId.toString(),
+    });
+
+    final response = await http.get(uri, headers: {
+      'Authorization': APIConstants.Authorization,
+      'Accept': 'application/json',
+    });
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      return TypeOfMoviesResponse.fromJson(json);
     } else {
       throw Exception('Failed to load genres');
     }
