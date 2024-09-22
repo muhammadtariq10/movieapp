@@ -1,10 +1,9 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
+import '../../api/api_service.dart';
 import '../../app_theme.dart';
-import 'package:http/http.dart' as http;
-
 import 'Popular.dart';
 import 'Recommended.dart';
+
 
 class HomeTap extends StatefulWidget {
   const HomeTap({super.key});
@@ -29,36 +28,23 @@ class _HomeTapState extends State<HomeTap> {
 
   Future<void> fetchData() async {
     try {
-      final popularResponse = await http.get(
-        Uri.parse('https://api.themoviedb.org/3/movie/popular?api_key=efe609b0bdfb6ffffe19516c5d3bb2b6'),
-      );
-      final upcomingResponse = await http.get(
-        Uri.parse('https://api.themoviedb.org/3/movie/upcoming?api_key=efe609b0bdfb6ffffe19516c5d3bb2b6'),
-      );
+      final moviesData = await APIService.fetchMovies();
 
-      if (popularResponse.statusCode == 200 && upcomingResponse.statusCode == 200) {
-        final popularData = json.decode(popularResponse.body);
-        final upcomingData = json.decode(upcomingResponse.body);
-
-        setState(() {
-          resultsPopular = ResultsPopular.fromJson(popularData['results'][0]);
-          resultsReal = (upcomingData['results'] as List<dynamic>)
-              .map((v) => ResultsPopular.fromJson(v)) // Ensure this maps to the correct class
-              .toList();
-          resultsRecommended = (popularData['results'] as List<dynamic>)
-              .map((v) => ResultsRecommended.fromJson(v)) // Adjust as necessary
-              .toList();
-          isLoading = false;
-        });
-      } else {
-        throw Exception('Failed to load data');
-      }
+      setState(() {
+        resultsPopular = ResultsPopular.fromJson(moviesData['popular'][0]);
+        resultsReal = (moviesData['upcoming'] as List<dynamic>)
+            .map((v) => ResultsPopular.fromJson(v))
+            .toList();
+        resultsRecommended = (moviesData['popular'] as List<dynamic>)
+            .map((v) => ResultsRecommended.fromJson(v))
+            .toList();
+        isLoading = false;
+      });
     } catch (e) {
       print(e.toString());
       // Optionally handle the error
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -146,7 +132,7 @@ class _HomeTapState extends State<HomeTap> {
                           Text(
                             '${resultsPopular.releaseDate.isNotEmpty
                                 ? resultsPopular.releaseDate
-                                : 'N/A'} ${resultsPopular.voteAverage != null
+                                : 'Data Not Available'} ${resultsPopular.voteAverage != null
                                 ? '${resultsPopular.voteAverage}/10'
                                 : ''}',
                             style: Theme
@@ -190,6 +176,7 @@ class _HomeTapState extends State<HomeTap> {
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: resultsReal.length,
+              // Changed to use the length of the list
               itemBuilder: (context, index) {
                 return Image.network(
                   resultsReal[index].posterPath != null &&
