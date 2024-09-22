@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:movieapp/tabs/browse/category_grid_item.dart';
-import 'package:movieapp/tabs/browse/category_model.dart';
-import 'package:movieapp/tabs/browse/movie_details.dart';
+import 'package:movieapp/tabs/browse/details_of_movie.dart';
+
+import '../category/category_grid.dart';
+import '../category/category_model.dart';
 
 class BrowseGrid extends StatelessWidget {
   const BrowseGrid({
@@ -27,13 +28,13 @@ class BrowseGrid extends StatelessWidget {
           onTap: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => MovieDetails(
+                builder: (context) => DetailsOfMovie(
                   movieName: categories[index].name,
                 ),
               ),
             );
           },
-          child: CategoryGridItem(
+          child: CategoryGrid(
             category: categories[index],
           ),
         ),
