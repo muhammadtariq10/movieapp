@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../../app_theme.dart';
-import 'Popular.dart';
 import 'package:http/http.dart' as http;
 
+import 'Popular.dart';
 import 'Recommended.dart';
 
 class HomeTap extends StatefulWidget {
@@ -17,9 +17,8 @@ class HomeTap extends StatefulWidget {
 
 class _HomeTapState extends State<HomeTap> {
   late ResultsPopular resultsPopular;
-  late ResultsPopular resultsReal;
-  late ResultsRecommended resultsRecommended;
-
+  List<ResultsPopular> resultsReal = [];
+  List<ResultsRecommended> resultsRecommended = [];
   bool isLoading = true;
 
   @override
@@ -43,8 +42,12 @@ class _HomeTapState extends State<HomeTap> {
 
         setState(() {
           resultsPopular = ResultsPopular.fromJson(popularData['results'][0]);
-          resultsReal = ResultsPopular.fromJson(upcomingData['results'][0]); // Use appropriate class
-          resultsRecommended = ResultsRecommended.fromJson(popularData['results'][1]);
+          resultsReal = (upcomingData['results'] as List<dynamic>)
+              .map((v) => ResultsPopular.fromJson(v)) // Ensure this maps to the correct class
+              .toList();
+          resultsRecommended = (popularData['results'] as List<dynamic>)
+              .map((v) => ResultsRecommended.fromJson(v)) // Adjust as necessary
+              .toList();
           isLoading = false;
         });
       } else {
@@ -55,6 +58,7 @@ class _HomeTapState extends State<HomeTap> {
       // Optionally handle the error
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -67,10 +71,13 @@ class _HomeTapState extends State<HomeTap> {
           Stack(
             children: [
               Image.network(
-                resultsPopular.backdropPath != null && resultsPopular.backdropPath!.isEmpty
-                    ? 'https://image.tmdb.org/t/p/w500${resultsPopular.backdropPath}'
+                resultsPopular.backdropPath != null &&
+                    resultsPopular.backdropPath!.isNotEmpty
+                    ? 'https://image.tmdb.org/t/p/w500${resultsPopular
+                    .backdropPath}'
                     : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWz9tftw9qculFH1gxieWkxL6rbRk_hrXTSg&s',
                 fit: BoxFit.cover,
+
                 width: double.infinity,
                 height: 250,
                 errorBuilder: (context, error, stackTrace) {
@@ -104,8 +111,10 @@ class _HomeTapState extends State<HomeTap> {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(8),
                       child: Image.network(
-                        resultsPopular.posterPath != null && resultsPopular.posterPath!.isNotEmpty
-                            ? 'https://image.tmdb.org/t/p/w500${resultsPopular.posterPath}'
+                        resultsPopular.posterPath != null &&
+                            resultsPopular.posterPath!.isNotEmpty
+                            ? 'https://image.tmdb.org/t/p/w500${resultsPopular
+                            .posterPath}'
                             : 'https://via.placeholder.com/100x150',
                         width: 100,
                         height: 150,
@@ -125,14 +134,26 @@ class _HomeTapState extends State<HomeTap> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            resultsPopular.title.isNotEmpty ? resultsPopular.title : 'Title Not Available',
-                            style: Theme.of(context).textTheme.titleLarge,
+                            resultsPopular.title.isNotEmpty ? resultsPopular
+                                .title : 'Title Not Available',
+                            style: Theme
+                                .of(context)
+                                .textTheme
+                                .titleLarge,
                             overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            '${resultsPopular.releaseDate.isNotEmpty ? resultsPopular.releaseDate : 'N/A'} ${resultsPopular.voteAverage != null ? '${resultsPopular.voteAverage}/10' : ''}',
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 14),
+                            '${resultsPopular.releaseDate.isNotEmpty
+                                ? resultsPopular.releaseDate
+                                : 'N/A'} ${resultsPopular.voteAverage != null
+                                ? '${resultsPopular.voteAverage}/10'
+                                : ''}',
+                            style: Theme
+                                .of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(fontSize: 14),
                           ),
                         ],
                       ),
@@ -157,7 +178,10 @@ class _HomeTapState extends State<HomeTap> {
             padding: const EdgeInsets.all(16.0),
             child: Text(
               'New Releases',
-              style: Theme.of(context).textTheme.titleLarge,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .titleLarge,
             ),
           ),
           Container(
@@ -165,11 +189,13 @@ class _HomeTapState extends State<HomeTap> {
             height: 200,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: resultsReal.posterPath != null && resultsReal.posterPath!.isNotEmpty ? 1 : 0,
+              itemCount: resultsReal.length,
               itemBuilder: (context, index) {
                 return Image.network(
-                  resultsReal.posterPath != null && resultsReal.posterPath!.isNotEmpty
-                      ? 'https://image.tmdb.org/t/p/w500${resultsReal.posterPath}'
+                  resultsReal[index].posterPath != null &&
+                      resultsReal[index].posterPath!.isNotEmpty
+                      ? 'https://image.tmdb.org/t/p/w500${resultsReal[index]
+                      .posterPath}'
                       : 'https://via.placeholder.com/100x150',
                 );
               },
@@ -179,7 +205,10 @@ class _HomeTapState extends State<HomeTap> {
             padding: const EdgeInsets.all(16.0),
             child: Text(
               'Recommended',
-              style: Theme.of(context).textTheme.titleLarge,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .titleLarge,
             ),
           ),
           Container(
@@ -187,14 +216,16 @@ class _HomeTapState extends State<HomeTap> {
             color: AppTheme.graySecond,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: resultsRecommended.posterPath != null && resultsRecommended.posterPath!.isNotEmpty ? 1 : 0,
+              itemCount: resultsRecommended.length,
+              // Changed to use the length of the list
               itemBuilder: (context, index) {
                 return Image.network(
-                  resultsRecommended.posterPath != null && resultsRecommended.posterPath!.isNotEmpty
-                      ? 'https://image.tmdb.org/t/p/w500${resultsRecommended.posterPath}'
+                  resultsRecommended[index].posterPath != null &&
+                      resultsRecommended[index].posterPath!.isNotEmpty
+                      ? 'https://image.tmdb.org/t/p/w500${resultsRecommended[index]
+                      .posterPath}'
                       : 'https://via.placeholder.com/100x150',
                 );
-
               },
             ),
           ),
