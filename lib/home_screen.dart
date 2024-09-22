@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:movieapp/app_theme.dart';
-import 'package:movieapp/tabs/Home_Tap.dart';
+import 'package:movieapp/tabs/home/Home_Tap.dart';
 import 'package:movieapp/tabs/browes_tap.dart';
 import 'package:movieapp/tabs/search_tap.dart';
 import 'package:movieapp/tabs/watch_list_tap.dart';
