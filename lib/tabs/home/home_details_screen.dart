@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movieapp/api/api_service.dart';
 import 'package:movieapp/app_theme.dart';
+import 'package:movieapp/model/movie_responce/movie_responce.dart';
 import 'package:movieapp/tabs/home/movie_card.dart';
 import 'package:movieapp/widgets/error%20_indicator.dart';
 import 'package:movieapp/widgets/loading_indicator.dart';
@@ -23,129 +24,146 @@ class _HomeDetailsScreenState extends State<HomeDetailsScreen> {
       movieId = args;
     }
 
-    print(movieId);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Detais Screen'),
+        title: const Text("Movies"),
       ),
-      body: FutureBuilder(
-        future: APIService.getMovieDetailsRespons(movieId!),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return LoadingIndicator();
-          } else if (snapshot.hasError) {
-            return ErrorIndicator();
-          } else {
-            final movies = snapshot.data;
-            return Column(
-              children: [
-                Image.asset(
-                  'assets/images/background.png',
-                  height: MediaQuery.of(context).size.height * 0.25,
-                  width: double.infinity,
-                  fit: BoxFit.fill,
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        movies?.originalTitle ??
-                            'Dora and the lost city of gold',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      Text(
-                        movies?.releaseDate ?? '',
-                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                              fontSize: 10,
-                            ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Row(
+      body: ListView(
+        children: [
+          FutureBuilder(
+            future: APIService.getMovieDetailsRespons(movieId!),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const LoadingIndicator();
+              } else if (snapshot.hasError) {
+                return const ErrorIndicator();
+              } else {
+                final movies = snapshot.data;
+                return Column(
+                  children: [
+                    Image.network(
+                      'https://image.tmdb.org/t/p/w500/${movies?.backdropPath}' ??
+                          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWz9tftw9qculFH1gxieWkxL6rbRk_hrXTSg&s',
+                      height: MediaQuery.of(context).size.height * 0.25,
+                      width: double.infinity,
+                      fit: BoxFit.fill,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 22, vertical: 14),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Image.asset(
-                            'assets/images/Image.png',
-                            fit: BoxFit.fill,
-                            height: MediaQuery.of(context).size.height * 0.22,
+                          Text(
+                            movies?.originalTitle ?? 'No Title',
+                            style: Theme.of(context).textTheme.titleLarge,
                           ),
-                          Padding(
-                            padding:
-                                const EdgeInsetsDirectional.only(start: 10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ActionChip(
-                                  backgroundColor: AppTheme.black,
-                                  label: Text(
-                                    'Action',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleSmall!
-                                        .copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          color: AppTheme.white,
-                                        ),
-                                  ),
-                                  onPressed: () {},
-                                  side: const BorderSide(
-                                    width: 2,
-                                    color: AppTheme.gold,
-                                  ),
+                          Text(
+                            movies?.releaseDate ?? '',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge!
+                                .copyWith(
+                                  fontSize: 10,
                                 ),
-                                const SizedBox(
-                                  height: 24,
-                                ),
-                                Text(
-                                  movies?.overview ?? '',
-                                  style: Theme.of(context).textTheme.titleSmall,
-                                ),
-                                const SizedBox(
-                                  height: 22,
-                                ),
-                                Row(
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            children: [
+                              Image.network(
+                                'https://image.tmdb.org/t/p/w500/${movies?.posterPath}' ??
+                                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWz9tftw9qculFH1gxieWkxL6rbRk_hrXTSg&s',
+                                fit: BoxFit.fill,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.22,
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsetsDirectional.only(start: 10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Icon(
-                                      Icons.star,
-                                      color: AppTheme.gold,
+                                    ActionChip(
+                                      backgroundColor: AppTheme.black,
+                                      label: Text(
+                                        movies?.belongsToCollection?.name ?? '',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleSmall!
+                                            .copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              color: AppTheme.white,
+                                            ),
+                                      ),
+                                      onPressed: () {},
+                                      side: const BorderSide(
+                                        width: 2,
+                                        color: AppTheme.gold,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 18,
                                     ),
                                     Text(
-                                      movies?.voteAverage.toString() ?? '',
+                                      formatText(
+                                          movies?.overview ??
+                                              'Overview not available.',
+                                          35), // 50 حرف في كل سطر
+
+                                      // movies?.overview ?? 'Overview not available.',
                                       style: Theme.of(context)
                                           .textTheme
-                                          .titleLarge,
+                                          .titleSmall,
                                     ),
+                                    const SizedBox(
+                                      height: 18,
+                                    ),
+                                    Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.star,
+                                          color: AppTheme.gold,
+                                        ),
+                                        Text(
+                                          movies?.voteAverage.toString() ?? '',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleLarge,
+                                        ),
+                                      ],
+                                    )
                                   ],
-                                )
-                              ],
-                            ),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
-                Container(
-                  color: AppTheme.graySecond,
-                  height: MediaQuery.of(context).size.height * 0.3,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (_, index) => const MovieCard(
-                      title: 'Deadpool 2',
-                      rating: 7.7,
-                      imageName: 'assets/images/Image.png',
                     ),
-                    itemCount: 10,
-                  ),
-                )
-              ],
-            );
-          }
-        },
+                    MovieCard(
+                      movieId: movieId!,
+                    ),
+                  ],
+                );
+              }
+            },
+          ),
+        ],
       ),
     );
+  }
+
+  String formatText(String text, int maxCharsPerLine) {
+    List<String> lines = [];
+    for (int i = 0; i < text.length; i += maxCharsPerLine) {
+      lines.add(text.substring(
+          i,
+          i + maxCharsPerLine > text.length
+              ? text.length
+              : i + maxCharsPerLine));
+    }
+    return lines.join('\n');
   }
 }

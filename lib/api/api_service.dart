@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:movieapp/model/movie_responce/movie_responce.dart';
+import 'package:movieapp/model/similar/similar_responce.dart';
 import 'package:movieapp/models/MoviesResponse.dart';
 
 import '../models/TypeOfMoviesResponse.dart';
@@ -45,7 +46,8 @@ class APIService {
     }
   }
 
-  static Future<MovieResponce> getMovieDetailsRespons(int movieId) async {
+  static Future<MovieResponceDetails> getMovieDetailsRespons(
+      int movieId) async {
     final url = Uri.https('api.themoviedb.org', '/3/movie/$movieId', {
       'language': 'en-US',
     });
@@ -56,7 +58,24 @@ class APIService {
     });
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
-      return MovieResponce.fromJson(json);
+      return MovieResponceDetails.fromJson(json);
+    } else {
+      throw Exception('Failed to load genres');
+    }
+  }
+
+  static Future<SimilarResponce> geSimilar(int movieId) async {
+    final url = Uri.https('api.themoviedb.org', '/3/movie/$movieId/similar', {
+      'language': 'en-US',
+    });
+    final response = await http.get(url, headers: {
+      'Authorization':
+          'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiZGM5YWQ2ZmE2ZjBmODRkZTIzMjA1NDlhZjcwMzFkYiIsIm5iZiI6MTcyNzAyNjg0Ni43ODYwNjMsInN1YiI6IjY2ZTZkYjU2ZTgyMTFlY2QyMmIwODdhMyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.QzHkJGfcsOfU0v0Yua16qabtCZTI-kKEQwCyeZw_29g',
+      'Accept': 'application/json',
+    });
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      return SimilarResponce.fromJson(json);
     } else {
       throw Exception('Failed to load genres');
     }

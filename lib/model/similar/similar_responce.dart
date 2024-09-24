@@ -1,15 +1,13 @@
-import 'package:movieapp/models/TypeOfMoviesResponse.dart';
-
-class Similarresponces {
+class SimilarResponce {
   int? page;
   List<Results>? results;
   int? totalPages;
   int? totalResults;
 
-  Similarresponces(
+  SimilarResponce(
       {this.page, this.results, this.totalPages, this.totalResults});
 
-  Similarresponces.fromJson(Map<String, dynamic> json) {
+  SimilarResponce.fromJson(Map<String, dynamic> json) {
     page = json['page'];
     if (json['results'] != null) {
       results = <Results>[];
