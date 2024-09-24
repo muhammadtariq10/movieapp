@@ -28,11 +28,12 @@ class _MovieCardState extends State<MovieCard> {
           final similar = snapshot.data;
           return Container(
             color: AppTheme.graySecond,
-            height: MediaQuery.of(context).size.height * 0.3,
+            height: MediaQuery.of(context).size.height * 0.38,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: 10,
+              itemCount: similar?.results?.length,
               itemBuilder: (_, index) => Container(
+                height: MediaQuery.of(context).size.height * 0.3,
                 width: 150,
                 margin: const EdgeInsets.all(8),
                 child: Column(
@@ -43,7 +44,7 @@ class _MovieCardState extends State<MovieCard> {
                           color: Color(0xFF343534),
                           borderRadius: BorderRadius.all(Radius.circular(5))),
                       width: 250,
-                      height: MediaQuery.of(context).size.height * 0.25,
+                      height: MediaQuery.of(context).size.height * 0.3,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

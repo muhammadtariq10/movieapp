@@ -58,20 +58,29 @@ class _HomeTapState extends State<HomeTap> {
               children: [
                 Stack(
                   children: [
-                    Image.network(
-                      resultsPopular.backdropPath != null &&
-                              resultsPopular.backdropPath!.isNotEmpty
-                          ? 'https://image.tmdb.org/t/p/w500${resultsPopular.backdropPath}'
-                          : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWz9tftw9qculFH1gxieWkxL6rbRk_hrXTSg&s',
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                      height: 250,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: Colors.grey,
-                          child: const Center(child: Icon(Icons.error)),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          HomeDetailsScreen.routName,
+                          arguments: resultsPopular.id,
                         );
                       },
+                      child: Image.network(
+                        resultsPopular.backdropPath != null &&
+                                resultsPopular.backdropPath!.isNotEmpty
+                            ? 'https://image.tmdb.org/t/p/w500${resultsPopular.backdropPath}'
+                            : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWz9tftw9qculFH1gxieWkxL6rbRk_hrXTSg&s',
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: 250,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            color: Colors.grey,
+                            child: const Center(child: Icon(Icons.error)),
+                          );
+                        },
+                      ),
                     ),
                     Container(
                       width: double.infinity,

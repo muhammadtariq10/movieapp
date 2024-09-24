@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movieapp/api/api_service.dart';
 import 'package:movieapp/app_theme.dart';
-import 'package:movieapp/model/movie_responce/movie_responce.dart';
 import 'package:movieapp/tabs/home/movie_card.dart';
 import 'package:movieapp/widgets/error%20_indicator.dart';
 import 'package:movieapp/widgets/loading_indicator.dart';
