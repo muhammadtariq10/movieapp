@@ -1,10 +1,8 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:movieapp/tabs/home/home_details_screen.dart';
+import '../../api/api_service.dart';
 import '../../app_theme.dart';
 import 'Popular.dart';
-import 'package:http/http.dart' as http;
-
 import 'Recommended.dart';
 
 class HomeTap extends StatefulWidget {
@@ -18,10 +16,12 @@ class HomeTap extends StatefulWidget {
 
 class _HomeTapState extends State<HomeTap> {
   late ResultsPopular resultsPopular;
-  late ResultsPopular resultsReal;
-  late ResultsRecommended resultsRecommended;
-
+  List<ResultsPopular> resultsReal = [];
+  List<ResultsRecommended> resultsRecommended = [];
   bool isLoading = true;
+
+  Set<int> favoriteNewReleases = {};
+  Set<int> favoriteRecommended = {};
 
   @override
   void initState() {
@@ -31,34 +31,20 @@ class _HomeTapState extends State<HomeTap> {
 
   Future<void> fetchData() async {
     try {
-      final popularResponse = await http.get(
-        Uri.parse(
-            'https://api.themoviedb.org/3/movie/popular?api_key=efe609b0bdfb6ffffe19516c5d3bb2b6'),
-      );
-      final upcomingResponse = await http.get(
-        Uri.parse(
-            'https://api.themoviedb.org/3/movie/upcoming?api_key=efe609b0bdfb6ffffe19516c5d3bb2b6'),
-      );
+      final moviesData = await APIService.fetchMovies();
 
-      if (popularResponse.statusCode == 200 &&
-          upcomingResponse.statusCode == 200) {
-        final popularData = json.decode(popularResponse.body);
-        final upcomingData = json.decode(upcomingResponse.body);
-
-        setState(() {
-          resultsPopular = ResultsPopular.fromJson(popularData['results'][0]);
-          resultsReal = ResultsPopular.fromJson(
-              upcomingData['results'][0]); // Use appropriate class
-          resultsRecommended =
-              ResultsRecommended.fromJson(popularData['results'][1]);
-          isLoading = false;
-        });
-      } else {
-        throw Exception('Failed to load data');
-      }
+      setState(() {
+        resultsPopular = ResultsPopular.fromJson(moviesData['popular'][0]);
+        resultsReal = (moviesData['upcoming'] as List<dynamic>)
+            .map((v) => ResultsPopular.fromJson(v))
+            .toList();
+        resultsRecommended = (moviesData['popular'] as List<dynamic>)
+            .map((v) => ResultsRecommended.fromJson(v))
+            .toList();
+        isLoading = false;
+      });
     } catch (e) {
       print(e.toString());
-      // Optionally handle the error
     }
   }
 
@@ -74,7 +60,7 @@ class _HomeTapState extends State<HomeTap> {
                   children: [
                     Image.network(
                       resultsPopular.backdropPath != null &&
-                              resultsPopular.backdropPath!.isEmpty
+                              resultsPopular.backdropPath!.isNotEmpty
                           ? 'https://image.tmdb.org/t/p/w500${resultsPopular.backdropPath}'
                           : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWz9tftw9qculFH1gxieWkxL6rbRk_hrXTSg&s',
                       fit: BoxFit.cover,
@@ -110,7 +96,7 @@ class _HomeTapState extends State<HomeTap> {
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(8),
-                            child: InkWell(
+                            child: GestureDetector(
                               onTap: () {
                                 Navigator.pushNamed(
                                   context,
@@ -151,7 +137,7 @@ class _HomeTapState extends State<HomeTap> {
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
-                                  '${resultsPopular.releaseDate.isNotEmpty ? resultsPopular.releaseDate : 'N/A'} ${resultsPopular.voteAverage != null ? '${resultsPopular.voteAverage}/10' : ''}',
+                                  '${resultsPopular.releaseDate.isNotEmpty ? resultsPopular.releaseDate : 'Data Not Available'} ${resultsPopular.voteAverage != null ? '${resultsPopular.voteAverage}/10' : ''}',
                                   style: Theme.of(context)
                                       .textTheme
                                       .titleMedium
@@ -161,16 +147,6 @@ class _HomeTapState extends State<HomeTap> {
                             ),
                           ),
                         ],
-                      ),
-                    ),
-                    Positioned(
-                      top: 100,
-                      left: 100,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(50),
-                        ),
                       ),
                     ),
                   ],
@@ -187,25 +163,48 @@ class _HomeTapState extends State<HomeTap> {
                   height: 200,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: resultsReal.posterPath != null &&
-                            resultsReal.posterPath!.isNotEmpty
-                        ? 1
-                        : 0,
+                    itemCount: resultsReal.length,
                     itemBuilder: (context, index) {
-                      return InkWell(
-                        onTap: () {
-                          Navigator.pushNamed(
-                            context,
-                            HomeDetailsScreen.routName,
-                            arguments: resultsReal.id,
-                          );
-                        },
-                        child: Image.network(
-                          resultsReal.posterPath != null &&
-                                  resultsReal.posterPath!.isNotEmpty
-                              ? 'https://image.tmdb.org/t/p/w500${resultsReal.posterPath}'
-                              : 'https://via.placeholder.com/100x150',
-                        ),
+                      final isFavorite = favoriteNewReleases.contains(index);
+                      return Stack(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                HomeDetailsScreen.routName,
+                                arguments: resultsReal[index].id,
+                              );
+                            },
+                            child: Image.network(
+                              resultsReal[index].posterPath != null &&
+                                      resultsReal[index].posterPath!.isNotEmpty
+                                  ? 'https://image.tmdb.org/t/p/w500${resultsReal[index].posterPath}'
+                                  : 'https://via.placeholder.com/100x150',
+                            ),
+                          ),
+                          Positioned(
+                            top: 8,
+                            right: 8,
+                            child: IconButton(
+                              icon: Icon(
+                                isFavorite
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                                color: isFavorite ? Colors.red : Colors.white,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  if (isFavorite) {
+                                    favoriteNewReleases.remove(index);
+                                  } else {
+                                    favoriteNewReleases.add(index);
+                                  }
+                                });
+                              },
+                            ),
+                          ),
+                        ],
                       );
                     },
                   ),
@@ -222,25 +221,50 @@ class _HomeTapState extends State<HomeTap> {
                   color: AppTheme.graySecond,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: resultsRecommended.posterPath != null &&
-                            resultsRecommended.posterPath!.isNotEmpty
-                        ? 1
-                        : 0,
+                    itemCount: resultsRecommended.length,
                     itemBuilder: (context, index) {
-                      return InkWell(
-                        onTap: () {
-                          Navigator.pushNamed(
-                            context,
-                            HomeDetailsScreen.routName,
-                            arguments: resultsRecommended.id,
-                          );
-                        },
-                        child: Image.network(
-                          resultsRecommended.posterPath != null &&
-                                  resultsRecommended.posterPath!.isNotEmpty
-                              ? 'https://image.tmdb.org/t/p/w500${resultsRecommended.posterPath}'
-                              : 'https://via.placeholder.com/100x150',
-                        ),
+                      final isFavorite = favoriteRecommended.contains(index);
+                      return Stack(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                HomeDetailsScreen.routName,
+                                arguments: resultsRecommended[index].id,
+                              );
+                            },
+                            child: Image.network(
+                              resultsRecommended[index].posterPath != null &&
+                                      resultsRecommended[index]
+                                          .posterPath!
+                                          .isNotEmpty
+                                  ? 'https://image.tmdb.org/t/p/w500${resultsRecommended[index].posterPath}'
+                                  : 'https://via.placeholder.com/100x150',
+                            ),
+                          ),
+                          Positioned(
+                            top: 8,
+                            right: 8,
+                            child: IconButton(
+                              icon: Icon(
+                                isFavorite
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                                color: isFavorite ? Colors.red : Colors.white,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  if (isFavorite) {
+                                    favoriteRecommended.remove(index);
+                                  } else {
+                                    favoriteRecommended.add(index);
+                                  }
+                                });
+                              },
+                            ),
+                          ),
+                        ],
                       );
                     },
                   ),

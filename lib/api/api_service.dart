@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
 import 'package:movieapp/model/movie_responce/movie_responce.dart';
 import 'package:movieapp/models/MoviesResponse.dart';
@@ -14,7 +13,7 @@ class APIService {
     });
 
     final response = await http.get(uri, headers: {
-      'Authorization': APIConstants.Authorization,
+      'Authorization': APIConstants.authorization,
       'Accept': 'application/json',
     });
 
@@ -34,7 +33,7 @@ class APIService {
     });
 
     final response = await http.get(uri, headers: {
-      'Authorization': APIConstants.Authorization,
+      'Authorization': APIConstants.authorization,
       'Accept': 'application/json',
     });
 
@@ -60,6 +59,40 @@ class APIService {
       return MovieResponce.fromJson(json);
     } else {
       throw Exception('Failed to load genres');
+    }
+  }
+
+  static Future<Map<String, dynamic>> fetchMovies() async {
+    final popularUri =
+        Uri.https(APIConstants.baseURL, APIConstants.moviesEndPoint, {
+      'api_key': APIConstants.apiKey,
+      'language': APIConstants.language,
+    });
+
+    final upcomingUri =
+        Uri.https(APIConstants.baseURL, APIConstants.upcomingEndPoint, {
+      'api_key': APIConstants.apiKey,
+      'language': APIConstants.language,
+    });
+
+    final popularResponse = await http.get(popularUri, headers: {
+      'Authorization': APIConstants.authorization,
+      'Accept': 'application/json',
+    });
+
+    final upcomingResponse = await http.get(upcomingUri, headers: {
+      'Authorization': APIConstants.authorization,
+      'Accept': 'application/json',
+    });
+
+    if (popularResponse.statusCode == 200 &&
+        upcomingResponse.statusCode == 200) {
+      return {
+        'popular': jsonDecode(popularResponse.body)['results'],
+        'upcoming': jsonDecode(upcomingResponse.body)['results'],
+      };
+    } else {
+      throw Exception('Failed to load movies');
     }
   }
 }
