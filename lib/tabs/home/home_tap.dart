@@ -4,7 +4,6 @@ import '../../app_theme.dart';
 import 'Popular.dart';
 import 'Recommended.dart';
 
-
 class HomeTap extends StatefulWidget {
   const HomeTap({super.key});
 
@@ -19,6 +18,10 @@ class _HomeTapState extends State<HomeTap> {
   List<ResultsPopular> resultsReal = [];
   List<ResultsRecommended> resultsRecommended = [];
   bool isLoading = true;
+
+
+  Set<int> favoriteNewReleases = {};
+  Set<int> favoriteRecommended = {};
 
   @override
   void initState() {
@@ -42,7 +45,6 @@ class _HomeTapState extends State<HomeTap> {
       });
     } catch (e) {
       print(e.toString());
-      // Optionally handle the error
     }
   }
 
@@ -59,11 +61,9 @@ class _HomeTapState extends State<HomeTap> {
               Image.network(
                 resultsPopular.backdropPath != null &&
                     resultsPopular.backdropPath!.isNotEmpty
-                    ? 'https://image.tmdb.org/t/p/w500${resultsPopular
-                    .backdropPath}'
+                    ? 'https://image.tmdb.org/t/p/w500${resultsPopular.backdropPath}'
                     : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWz9tftw9qculFH1gxieWkxL6rbRk_hrXTSg&s',
                 fit: BoxFit.cover,
-
                 width: double.infinity,
                 height: 250,
                 errorBuilder: (context, error, stackTrace) {
@@ -99,8 +99,7 @@ class _HomeTapState extends State<HomeTap> {
                       child: Image.network(
                         resultsPopular.posterPath != null &&
                             resultsPopular.posterPath!.isNotEmpty
-                            ? 'https://image.tmdb.org/t/p/w500${resultsPopular
-                            .posterPath}'
+                            ? 'https://image.tmdb.org/t/p/w500${resultsPopular.posterPath}'
                             : 'https://via.placeholder.com/100x150',
                         width: 100,
                         height: 150,
@@ -120,23 +119,17 @@ class _HomeTapState extends State<HomeTap> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            resultsPopular.title.isNotEmpty ? resultsPopular
-                                .title : 'Title Not Available',
-                            style: Theme
-                                .of(context)
-                                .textTheme
-                                .titleLarge,
+                            resultsPopular.title.isNotEmpty
+                                ? resultsPopular.title
+                                : 'Title Not Available',
+                            style:
+                            Theme.of(context).textTheme.titleLarge,
                             overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            '${resultsPopular.releaseDate.isNotEmpty
-                                ? resultsPopular.releaseDate
-                                : 'Data Not Available'} ${resultsPopular.voteAverage != null
-                                ? '${resultsPopular.voteAverage}/10'
-                                : ''}',
-                            style: Theme
-                                .of(context)
+                            '${resultsPopular.releaseDate.isNotEmpty ? resultsPopular.releaseDate : 'Data Not Available'} ${resultsPopular.voteAverage != null ? '${resultsPopular.voteAverage}/10' : ''}',
+                            style: Theme.of(context)
                                 .textTheme
                                 .titleMedium
                                 ?.copyWith(fontSize: 14),
@@ -147,27 +140,13 @@ class _HomeTapState extends State<HomeTap> {
                   ],
                 ),
               ),
-              Positioned(
-                top: 100,
-                left: 100,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-
-                ),
-              ),
             ],
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
               'New Releases',
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .titleLarge,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
           ),
           Container(
@@ -176,14 +155,38 @@ class _HomeTapState extends State<HomeTap> {
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: resultsReal.length,
-              // Changed to use the length of the list
               itemBuilder: (context, index) {
-                return Image.network(
-                  resultsReal[index].posterPath != null &&
-                      resultsReal[index].posterPath!.isNotEmpty
-                      ? 'https://image.tmdb.org/t/p/w500${resultsReal[index]
-                      .posterPath}'
-                      : 'https://via.placeholder.com/100x150',
+                final isFavorite = favoriteNewReleases.contains(index);
+                return Stack(
+                  children: [
+                    Image.network(
+                      resultsReal[index].posterPath != null &&
+                          resultsReal[index].posterPath!.isNotEmpty
+                          ? 'https://image.tmdb.org/t/p/w500${resultsReal[index].posterPath}'
+                          : 'https://via.placeholder.com/100x150',
+                    ),
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: IconButton(
+                        icon: Icon(
+                          isFavorite
+                              ? Icons.favorite
+                              : Icons.favorite_border,
+                          color: isFavorite ? Colors.red : Colors.white,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            if (isFavorite) {
+                              favoriteNewReleases.remove(index);
+                            } else {
+                              favoriteNewReleases.add(index);
+                            }
+                          });
+                        },
+                      ),
+                    ),
+                  ],
                 );
               },
             ),
@@ -192,10 +195,7 @@ class _HomeTapState extends State<HomeTap> {
             padding: const EdgeInsets.all(16.0),
             child: Text(
               'Recommended',
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .titleLarge,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
           ),
           Container(
@@ -204,14 +204,38 @@ class _HomeTapState extends State<HomeTap> {
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: resultsRecommended.length,
-              // Changed to use the length of the list
               itemBuilder: (context, index) {
-                return Image.network(
-                  resultsRecommended[index].posterPath != null &&
-                      resultsRecommended[index].posterPath!.isNotEmpty
-                      ? 'https://image.tmdb.org/t/p/w500${resultsRecommended[index]
-                      .posterPath}'
-                      : 'https://via.placeholder.com/100x150',
+                final isFavorite = favoriteRecommended.contains(index);
+                return Stack(
+                  children: [
+                    Image.network(
+                      resultsRecommended[index].posterPath != null &&
+                          resultsRecommended[index].posterPath!.isNotEmpty
+                          ? 'https://image.tmdb.org/t/p/w500${resultsRecommended[index].posterPath}'
+                          : 'https://via.placeholder.com/100x150',
+                    ),
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: IconButton(
+                        icon: Icon(
+                          isFavorite
+                              ? Icons.favorite
+                              : Icons.favorite_border,
+                          color: isFavorite ? Colors.red : Colors.white,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            if (isFavorite) {
+                              favoriteRecommended.remove(index);
+                            } else {
+                              favoriteRecommended.add(index);
+                            }
+                          });
+                        },
+                      ),
+                    ),
+                  ],
                 );
               },
             ),
