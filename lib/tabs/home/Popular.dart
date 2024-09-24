@@ -9,8 +9,9 @@ class Popular {
   Popular.fromJson(Map<String, dynamic> json)
       : page = json['page'],
         results = (json['results'] as List<dynamic>?)
-            ?.map((v) => ResultsPopular.fromJson(v))
-            .toList() ?? [],
+                ?.map((v) => ResultsPopular.fromJson(v))
+                .toList() ??
+            [],
         totalPages = json['total_pages'],
         totalResults = json['total_results'];
 

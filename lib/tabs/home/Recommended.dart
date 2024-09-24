@@ -9,8 +9,8 @@ class Recommended {
   Recommended.fromJson(Map<String, dynamic> json)
       : page = json['page'],
         results = (json['results'] as List<dynamic>?)
-            ?.map((v) => ResultsRecommended.fromJson(v))
-            .toList() ??
+                ?.map((v) => ResultsRecommended.fromJson(v))
+                .toList() ??
             [],
         totalPages = json['total_pages'],
         totalResults = json['total_results'];

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:movieapp/app_theme.dart';
 import 'package:movieapp/home_screen.dart';
+import 'package:movieapp/tabs/home/home_details_screen.dart';
+import 'package:movieapp/tabs/home/home_tap.dart';
 
 void main() {
   runApp(const MovieApp());
@@ -15,6 +17,8 @@ class MovieApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: {
         HomeScreen.routName: (_) => const HomeScreen(),
+        HomeTap.routeName: (_) => const HomeTap(),
+        HomeDetailsScreen.routName: (_) => const HomeDetailsScreen(),
       },
       themeMode: ThemeMode.light,
       theme: AppTheme.lightetheme,

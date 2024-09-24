@@ -67,6 +67,7 @@ class NewRealeases {
         totalResults: totalResults ?? _totalResults,
       );
 }
+
 class ResultsReal {
   bool? _adult;
   String? _backdropPath;
@@ -199,6 +200,7 @@ class ResultsReal {
         voteCount: voteCount ?? _voteCount,
       );
 }
+
 class Dates {
   String? _maximum;
   String? _minimum;
