@@ -109,9 +109,7 @@ class _HomeDetailsScreenState extends State<HomeDetailsScreen> {
                                       formatText(
                                           movies?.overview ??
                                               'Overview not available.',
-                                          35), // 50 حرف في كل سطر
-
-                                      // movies?.overview ?? 'Overview not available.',
+                                          35),
                                       style: Theme.of(context)
                                           .textTheme
                                           .titleSmall,
