@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../api/api_service.dart';
-import '../../models/MoviesResponse.dart';
+
+import '../../models/browse_response/MoviesResponse.dart';
 import '../../widgets/error _indicator.dart';
 import '../../widgets/loading_indicator.dart';
 import 'details_of_movie.dart';
