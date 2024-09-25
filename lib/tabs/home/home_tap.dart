@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:movieapp/tabs/home/home_details_screen.dart';
 import '../../api/api_service.dart';
 import '../../app_theme.dart';
-import 'Popular.dart';
-import 'Recommended.dart';
+import '../../models/home_response/Popular.dart';
+import '../../models/home_response/Recommended.dart';
+
+
 
 class HomeTap extends StatefulWidget {
   const HomeTap({super.key});

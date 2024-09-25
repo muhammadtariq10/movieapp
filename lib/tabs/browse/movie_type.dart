@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../models/MoviesResponse.dart';
+import '../../models/browse_response/MoviesResponse.dart';
 
 class MovieType extends StatelessWidget {
   Genres categories;

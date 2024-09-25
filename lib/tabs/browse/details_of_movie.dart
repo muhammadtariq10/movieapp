@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:movieapp/app_theme.dart';
 
 import '../../api/api_service.dart';
-import '../../models/TypeOfMoviesResponse.dart';
+
+import '../../models/browse_response/TypeOfMoviesResponse.dart';
 import '../../widgets/error _indicator.dart';
 import '../../widgets/loading_indicator.dart';
 

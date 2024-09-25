@@ -1,20 +1,20 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:movieapp/model/movie_responce/movie_responce.dart';
-import 'package:movieapp/model/similar/similar_responce.dart';
-import 'package:movieapp/models/MoviesResponse.dart';
 
-import '../models/TypeOfMoviesResponse.dart';
+import '../models/browse_response/MoviesResponse.dart';
+import '../models/browse_response/TypeOfMoviesResponse.dart';
+import '../models/home_details_response/movie_responce/movie_responce.dart';
+import '../models/home_details_response/similar/similar_responce.dart';
 import 'api_constants.dart';
 
 class APIService {
   static Future<MoviesResponse> getSources() async {
-    final uri = Uri.https(APIConstants.baseURL, APIConstants.moviesEndPoint, {
+    final uri = Uri.https(APIConstants.baseURL, APIConstants.moviesEndPointBrowse, {
       'language': 'en',
     });
 
     final response = await http.get(uri, headers: {
-      'Authorization': APIConstants.authorization,
+      'Authorization': APIConstants.Authorization,
       'Accept': 'application/json',
     });
 
@@ -34,7 +34,7 @@ class APIService {
     });
 
     final response = await http.get(uri, headers: {
-      'Authorization': APIConstants.authorization,
+      'Authorization': APIConstants.Authorization,
       'Accept': 'application/json',
     });
 
@@ -95,12 +95,12 @@ class APIService {
     });
 
     final popularResponse = await http.get(popularUri, headers: {
-      'Authorization': APIConstants.authorization,
+      'Authorization': APIConstants.Authorization,
       'Accept': 'application/json',
     });
 
     final upcomingResponse = await http.get(upcomingUri, headers: {
-      'Authorization': APIConstants.authorization,
+      'Authorization': APIConstants.Authorization,
       'Accept': 'application/json',
     });
 
