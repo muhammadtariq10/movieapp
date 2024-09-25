@@ -25,6 +25,15 @@ class _HomeDetailsScreenState extends State<HomeDetailsScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(
+            Icons.arrow_back,
+            color: AppTheme.white,
+          ),
+        ),
         title: const Text("Movies"),
       ),
       body: ListView(
@@ -87,7 +96,8 @@ class _HomeDetailsScreenState extends State<HomeDetailsScreen> {
                                     ActionChip(
                                       backgroundColor: AppTheme.black,
                                       label: Text(
-                                        movies?.belongsToCollection?.name ?? '',
+                                        movies?.belongsToCollection?.name ??
+                                            'No Name',
                                         style: Theme.of(context)
                                             .textTheme
                                             .titleSmall!
@@ -109,9 +119,7 @@ class _HomeDetailsScreenState extends State<HomeDetailsScreen> {
                                       formatText(
                                           movies?.overview ??
                                               'Overview not available.',
-                                          35), // 50 حرف في كل سطر
-
-                                      // movies?.overview ?? 'Overview not available.',
+                                          30),
                                       style: Theme.of(context)
                                           .textTheme
                                           .titleSmall,

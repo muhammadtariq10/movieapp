@@ -72,7 +72,7 @@ class _MovieCardState extends State<MovieCard> {
                                     Text(
                                       similar?.results?[index].popularity
                                               .toString() ??
-                                          '',
+                                          'No Rity',
                                       style: Theme.of(context)
                                           .textTheme
                                           .titleSmall,
@@ -81,7 +81,7 @@ class _MovieCardState extends State<MovieCard> {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  similar?.results?[index].title ?? '',
+                                  similar?.results?[index].title ?? 'No Title',
                                   style: Theme.of(context)
                                       .textTheme
                                       .titleSmall!
@@ -92,7 +92,8 @@ class _MovieCardState extends State<MovieCard> {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  similar?.results?[index].releaseDate ?? '',
+                                  similar?.results?[index].releaseDate ??
+                                      'No Date',
                                   style: Theme.of(context)
                                       .textTheme
                                       .titleLarge!
