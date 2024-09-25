@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:movieapp/app_theme.dart';
+import 'package:movieapp/shared/app_theme.dart';
 
 class SearchTextField extends StatelessWidget {
   const SearchTextField({super.key, this.controller, this.onChanged});
