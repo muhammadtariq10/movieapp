@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../app_theme.dart';
+import '../../../../models/search_response/view_model/search_state.dart';
+import '../../../../models/search_response/view_model/search_view_model.dart';
 import '../../../../widgets/error _indicator.dart';
 import '../../../../widgets/loading_indicator.dart';
-import '../../view_model/search_state.dart';
-import '../../view_model/search_view_model.dart';
 import 'movie_item_search.dart';
 
 
@@ -32,7 +32,8 @@ class _SearchMoviesListState extends State<SearchMoviesList> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset('assets/images/Icon material-local-movies.png'),
+                  Image.asset(
+                      'assets/images/Icon material-local-movies.png.jpeg'),
                   const SizedBox(
                     height: 10,
                   ),

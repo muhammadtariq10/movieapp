@@ -9,7 +9,7 @@ import '../data/repo/movie_repo.dart';
 class SearchViewModel extends Cubit<SearchState> {
   late MovieRepo repo;
   SearchViewModel() : super(SearchInitial()) {
-    repo = MovieRepo(dataSource: SearchedMovieAPIDataSource());
+    repo = MovieRepo(dataSource: SearchedMovieApiDataSource());
   }
   Future<void> getSearchedMovies(String query) async {
     emit(GetMoviesLoading());
