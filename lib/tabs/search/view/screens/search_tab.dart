@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import '../widgets/search_text_field.dart';
 import '../widgets/searched_movie_list.dart';
 
-class SearchTap extends StatefulWidget {
-  const SearchTap({super.key});
+class SearchTab extends StatefulWidget {
+  const SearchTab({super.key});
 
   @override
-  State<SearchTap> createState() => _SearchTapState();
+  State<SearchTab> createState() => _SearchTapState();
 }
 
-class _SearchTapState extends State<SearchTap> {
+class _SearchTapState extends State<SearchTab> {
   final searchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
