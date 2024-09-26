@@ -1,34 +1,72 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:movieapp/app_theme.dart';
-import 'package:movieapp/tabs/watchlist/movie_item.dart';
 
-import '../category/category_model_movie_details.dart';
+class WatchListTap extends StatefulWidget {
+  const WatchListTap({super.key});
 
-class WatchListTap extends StatelessWidget {
-  WatchListTap({super.key});
+  @override
+  State<WatchListTap> createState() => _WatchListTapState();
+}
 
-  final List<CategoryModelMovieDetails> categories = List.generate(
-    10,
-    (index) => CategoryModelMovieDetails(
-      image: 'assets/images/action.png',
-      title: 'Alita Battle Angel',
-      year: '2019',
-      actors: 'Rosa Salazar, Christoph Waltz',
-    ),
-  );
+class _WatchListTapState extends State<WatchListTap> {
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  Future<void> removeFromWatchlist(String documentId) async {
+    try {
+      await firestore.collection('watchlist').doc(documentId).delete();
+    } catch (e) {
+      print('Error removing movie from watchlist: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Watchlist'),
-        backgroundColor: AppTheme.black,
       ),
-      body: ListView.builder(
-        physics: const BouncingScrollPhysics(),
-        itemBuilder: (_, index) => MovieItem(
-          categories: categories[index],
-        ),
-        itemCount: categories.length,
+      body: StreamBuilder<QuerySnapshot>(
+        stream: firestore.collection('watchlist').snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (snapshot.hasError) {
+            return const Center(child: Text('Error loading watchlist.'));
+          }
+
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return const Center(child: Text('No movies in watchlist.'));
+          }
+
+          final movies = snapshot.data!.docs;
+
+          return ListView.builder(
+            itemCount: movies.length,
+            itemBuilder: (context, index) {
+              final movie = movies[index];
+              return ListTile(
+                leading: Image.network(
+                  movie['posterPath'] != null && movie['posterPath'].isNotEmpty
+                      ? 'https://image.tmdb.org/t/p/w500${movie['posterPath']}'
+                      : 'https://via.placeholder.com/100x150',
+                ),
+                title: Text(
+                  movie['title'] ?? 'No title available',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                subtitle: Text(movie['releaseDate'] ?? 'No date available'),
+                trailing: IconButton(
+                  icon: const Icon(Icons.delete, color: Colors.red),
+                  onPressed: () {
+                    removeFromWatchlist(movie.id);
+                  },
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }

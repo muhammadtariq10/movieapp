@@ -1,10 +1,13 @@
+import 'package:firebase_core/firebase_core.dart'; // إضافة Firebase
 import 'package:flutter/material.dart';
 import 'package:movieapp/app_theme.dart';
 import 'package:movieapp/home_screen.dart';
 import 'package:movieapp/tabs/home/home_details_screen.dart';
 import 'package:movieapp/tabs/home/home_tap.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MovieApp());
 }
 
