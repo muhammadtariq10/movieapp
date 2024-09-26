@@ -16,7 +16,7 @@ class HomeTap extends StatefulWidget {
 }
 
 class _HomeTapState extends State<HomeTap> {
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore fireStore = FirebaseFirestore.instance;
   bool isLoading = true;
   bool hasError = false;
   List<ResultsPopular> resultsPopular = [];
@@ -27,36 +27,36 @@ class _HomeTapState extends State<HomeTap> {
 
   Future<void> addToWatchlist(dynamic movie) async {
     try {
-      await firestore.collection('watchlist').add({
+      await fireStore.collection('watchlist').add({
         'movieId': movie.id,
         'title': movie.title,
         'posterPath': movie.posterPath,
         'releaseDate': movie.releaseDate,
         'voteAverage': movie.voteAverage,
       });
-      // Refresh the favorites after adding
-      fetchWatchlist();
+
+      favouritFilms();
     } catch (e) {
       print('Error adding movie to watchlist: $e');
     }
   }
 
-  Future<void> fetchWatchlist() async {
+  Future<void> favouritFilms() async {
     try {
-      final snapshot = await firestore.collection('watchlist').get();
+      final snapshot = await fireStore.collection('watchlist').get();
       final watchlist =
           snapshot.docs.map((doc) => doc['movieId'] as int).toSet();
       setState(() {
         favoriteNewReleases = watchlist;
         favoriteRecommended =
-            watchlist; // Assuming you want to do the same for recommended
+            watchlist;
       });
     } catch (e) {
       print('Error fetching watchlist: $e');
     }
   }
 
-  Future<void> fetchData() async {
+  Future<void> getMovie() async {
     try {
       final moviesData = await APIService.fetchMovies();
       setState(() {
@@ -82,8 +82,8 @@ class _HomeTapState extends State<HomeTap> {
   @override
   void initState() {
     super.initState();
-    fetchData();
-    fetchWatchlist(); // Fetch watchlist on init
+    getMovie();
+    favouritFilms();
   }
 
   @override
@@ -225,7 +225,7 @@ class _HomeTapState extends State<HomeTap> {
               itemCount: resultsReal.length,
               itemBuilder: (context, index) {
                 final isFavorite = favoriteNewReleases.contains(
-                    resultsReal[index].id); // Check if movie is in watchlist
+                    resultsReal[index].id);
                 return Stack(
                   children: [
                     GestureDetector(
@@ -254,7 +254,7 @@ class _HomeTapState extends State<HomeTap> {
                         onPressed: isFavorite
                             ? null
                             : () {
-                                // Disable button if already in watchlist
+
                                 addToWatchlist(resultsReal[index]);
                               },
                       ),
@@ -280,7 +280,7 @@ class _HomeTapState extends State<HomeTap> {
               itemBuilder: (context, index) {
                 final isFavorite = favoriteRecommended.contains(
                     resultsRecommended[index]
-                        .id); // Check if movie is in watchlist
+                        .id);
                 return Stack(
                   children: [
                     GestureDetector(
@@ -308,10 +308,8 @@ class _HomeTapState extends State<HomeTap> {
                         ),
                         onPressed: isFavorite
                             ? null
-                            : () {
-                                // Disable button if already in watchlist
-                                addToWatchlist(resultsRecommended[index]);
-                              },
+                            : () {addToWatchlist(resultsRecommended[index]);
+                          },
                       ),
                     ),
                   ],

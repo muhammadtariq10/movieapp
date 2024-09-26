@@ -1,4 +1,4 @@
-import 'package:firebase_core/firebase_core.dart'; // إضافة Firebase
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:movieapp/app_theme.dart';
 import 'package:movieapp/home_screen.dart';
