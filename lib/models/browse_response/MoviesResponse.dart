@@ -7,15 +7,15 @@ class MoviesResponse {
     if (json['genres'] != null) {
       genres = <Genres>[];
       json['genres'].forEach((v) {
-        genres!.add(new Genres.fromJson(v));
+        genres!.add(Genres.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.genres != null) {
-      data['genres'] = this.genres!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (genres != null) {
+      data['genres'] = genres!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -35,10 +35,10 @@ class Genres {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['image_path'] = this.imagePath;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['image_path'] = imagePath;
     return data;
   }
 }

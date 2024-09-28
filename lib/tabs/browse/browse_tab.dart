@@ -9,7 +9,7 @@ import 'details_of_movie.dart';
 import 'movie_type.dart';
 
 class BrowseTab extends StatelessWidget {
-  BrowseTab({super.key});
+  const BrowseTab({super.key});
   static const routeName = 'browse';
 
   @override

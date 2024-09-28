@@ -35,13 +35,13 @@ class _HomeTapState extends State<HomeTap> {
         'voteAverage': movie.voteAverage,
       });
 
-      favouritFilms();
-    } catch (e) {
-      print('Error adding movie to watchlist: $e');
+      favoritFilms();
+    } catch (error) {
+      print('Error adding movie to watchlist: $error');
     }
   }
 
-  Future<void> favouritFilms() async {
+  Future<void> favoritFilms() async {
     try {
       final snapshot = await fireStore.collection('watchlist').get();
       final watchlist =
@@ -51,8 +51,8 @@ class _HomeTapState extends State<HomeTap> {
         favoriteRecommended =
             watchlist;
       });
-    } catch (e) {
-      print('Error fetching watchlist: $e');
+    } catch (error) {
+      print('Error fetching watchlist: $error');
     }
   }
 
@@ -83,7 +83,7 @@ class _HomeTapState extends State<HomeTap> {
   void initState() {
     super.initState();
     getMovie();
-    favouritFilms();
+    favoritFilms();
   }
 
   @override
@@ -114,8 +114,7 @@ class _HomeTapState extends State<HomeTap> {
                 },
                 child: Image.network(
                   resultsPopular.isNotEmpty &&
-                          resultsPopular[0].backdropPath != null &&
-                          resultsPopular[0].backdropPath!.isNotEmpty
+                          resultsPopular[0].backdropPath.isNotEmpty
                       ? 'https://image.tmdb.org/t/p/w500${resultsPopular[0].backdropPath}'
                       : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWz9tftw9qculFH1gxieWkxL6rbRk_hrXTSg&s',
                   fit: BoxFit.cover,
@@ -164,8 +163,7 @@ class _HomeTapState extends State<HomeTap> {
                         },
                         child: Image.network(
                           resultsPopular.isNotEmpty &&
-                                  resultsPopular[0].posterPath != null &&
-                                  resultsPopular[0].posterPath!.isNotEmpty
+                                  resultsPopular[0].posterPath.isNotEmpty
                               ? 'https://image.tmdb.org/t/p/w500${resultsPopular[0].posterPath}'
                               : 'https://via.placeholder.com/100x150',
                           width: 100,
@@ -196,7 +194,7 @@ class _HomeTapState extends State<HomeTap> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            '${resultsPopular.isNotEmpty && resultsPopular[0].releaseDate.isNotEmpty ? resultsPopular[0].releaseDate : 'Data Not Available'} ${resultsPopular.isNotEmpty && resultsPopular[0].voteAverage != null ? '${resultsPopular[0].voteAverage}/10' : ''}',
+                            '${resultsPopular.isNotEmpty && resultsPopular[0].releaseDate.isNotEmpty ? resultsPopular[0].releaseDate : 'Data Not Available'} ${resultsPopular.isNotEmpty ? '${resultsPopular[0].voteAverage}/10' : ''}',
                             style: Theme.of(context)
                                 .textTheme
                                 .titleMedium
@@ -237,8 +235,7 @@ class _HomeTapState extends State<HomeTap> {
                         );
                       },
                       child: Image.network(
-                        resultsReal[index].posterPath != null &&
-                                resultsReal[index].posterPath!.isNotEmpty
+                        resultsReal[index].posterPath.isNotEmpty
                             ? 'https://image.tmdb.org/t/p/w500${resultsReal[index].posterPath}'
                             : 'https://via.placeholder.com/100x150',
                       ),
@@ -292,8 +289,7 @@ class _HomeTapState extends State<HomeTap> {
                         );
                       },
                       child: Image.network(
-                        resultsRecommended[index].posterPath != null &&
-                                resultsRecommended[index].posterPath!.isNotEmpty
+                        resultsRecommended[index].posterPath.isNotEmpty
                             ? 'https://image.tmdb.org/t/p/w500${resultsRecommended[index].posterPath}'
                             : 'https://via.placeholder.com/100x150',
                       ),

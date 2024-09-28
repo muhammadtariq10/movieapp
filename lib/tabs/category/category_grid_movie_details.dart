@@ -4,7 +4,7 @@ import '../../app_theme.dart';
 import 'category_model_movie_details.dart';
 
 class CategoryGridMovieDetails extends StatelessWidget {
-  CategoryGridMovieDetails({super.key, required this.categories});
+  const CategoryGridMovieDetails({super.key, required this.categories});
 
   final CategoryModelMovieDetails categories;
 

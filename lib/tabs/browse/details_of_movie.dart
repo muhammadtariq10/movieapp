@@ -11,7 +11,7 @@ class DetailsOfMovie extends StatelessWidget {
   final String movieName;
   final int genreId;
 
-  DetailsOfMovie({super.key, required this.movieName, required this.genreId});
+  const DetailsOfMovie({super.key, required this.movieName, required this.genreId});
 
   @override
   Widget build(BuildContext context) {
